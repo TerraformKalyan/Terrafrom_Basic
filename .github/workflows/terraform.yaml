@@ -60,7 +60,7 @@ jobs:
 
   
   terraform-destroy:
-    name: Terraform Plan
+    name: Terraform Destroy
     runs-on: ubuntu-latest
     environment: Prod
 
