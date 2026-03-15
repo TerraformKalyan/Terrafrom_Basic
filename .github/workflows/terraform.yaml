@@ -32,38 +32,11 @@ jobs:
     - name: Terraform Plan
       run: terraform plan
 
-  # terraform-apply:
-  #   name: Terraform Apply
-  #   needs: terraform-plan
-  #   runs-on: ubuntu-latest
-  #   environment: Prod   # 🔴 this creates manual approval
-
-  #   steps:
-  #   - name: Checkout Code
-  #     uses: actions/checkout@v3
-
-  #   - name: Setup Terraform
-  #     uses: hashicorp/setup-terraform@v3
-
-  #   - name: Configure AWS Credentials
-  #     uses: aws-actions/configure-aws-credentials@v2
-  #     with:
-  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       aws-region: ${{ vars.AWS_REGION }}
-
-  #   - name: Terraform Init
-  #     run: terraform init
-
-  #   - name: Terraform Apply
-  #     run: terraform apply -auto-approve
-
-  
-  terraform-destroy:
-    name: Terraform Destroy
+  terraform-apply:
+    name: Terraform Apply
+    needs: terraform-plan
     runs-on: ubuntu-latest
-    # needs: terraform-apply
-    environment: Prod
+    environment: Prod   # 🔴 this creates manual approval
 
     steps:
     - name: Checkout Code
@@ -77,10 +50,37 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: ${{ vars.AWS_REGION }}
 
     - name: Terraform Init
       run: terraform init
 
-    - name: Terraform destroy
-      run: terraform destroy -auto-approve
+    - name: Terraform Apply
+      run: terraform apply -auto-approve
+
+  
+  # terraform-destroy:
+  #   name: Terraform Destroy
+  #   runs-on: ubuntu-latest
+  #   needs: terraform-apply
+  #   environment: Prod
+
+  #   steps:
+  #   - name: Checkout Code
+  #     uses: actions/checkout@v3
+
+  #   - name: Setup Terraform
+  #     uses: hashicorp/setup-terraform@v3
+
+  #   - name: Configure AWS Credentials
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-east-1
+
+  #   - name: Terraform Init
+  #     run: terraform init
+
+  #   - name: Terraform destroy
+  #     run: terraform destroy -auto-approve
